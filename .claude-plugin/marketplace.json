@@ -1,0 +1,27 @@
+{
+  "name": "jleonardopl1",
+  "owner": {
+    "name": "jleonardopl1"
+  },
+  "metadata": {
+    "description": "English Fluency — personal American-English coach for Brazilian Portuguese speakers.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "english-fluency",
+      "source": "./skill",
+      "description": "Personal American-English fluency coach (Alex) for Brazilian Portuguese speakers. Conversation, drills, role-plays, pronunciation, level tests, spaced-repetition review, and cross-session progress tracking — tuned to PT-BR interference patterns.",
+      "category": "education",
+      "tags": ["english", "language", "fluency", "esl", "tutor", "pronunciation", "spaced-repetition"],
+      "homepage": "https://github.com/jleonardopl1/English-Fluency",
+      "repository": "https://github.com/jleonardopl1/English-Fluency",
+      "license": "MIT",
+      "author": {
+        "name": "jleonardopl1",
+        "url": "https://github.com/jleonardopl1"
+      },
+      "version": "1.0.0"
+    }
+  ]
+}

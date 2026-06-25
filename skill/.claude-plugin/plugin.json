@@ -1,0 +1,24 @@
+{
+  "name": "english-fluency",
+  "version": "1.0.0",
+  "description": "Your personal American-English fluency coach for Brazilian Portuguese speakers. Conversation practice, grammar/vocab/pronunciation drills, role-plays, level tests, spaced-repetition review, and cross-session progress tracking. Acts as a warm, rigorous coach (Alex) tuned to PT-BR interference patterns. Just talk, or use /start, /chat, /drill, /roleplay, /pronounce, /test, /review, /progress, /plan.",
+  "author": {
+    "name": "jleonardopl1",
+    "url": "https://github.com/jleonardopl1"
+  },
+  "homepage": "https://github.com/jleonardopl1/English-Fluency",
+  "repository": "https://github.com/jleonardopl1/English-Fluency",
+  "license": "MIT",
+  "keywords": [
+    "english",
+    "language-learning",
+    "fluency",
+    "esl",
+    "brazilian-portuguese",
+    "american-english",
+    "pronunciation",
+    "spaced-repetition",
+    "tutor",
+    "coach"
+  ]
+}
