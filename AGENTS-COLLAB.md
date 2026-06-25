@@ -76,12 +76,15 @@ Definições completas em `.claude/agents/`. Cada agente tem uma faixa (lane) cl
   o cliente recebe só token efêmero via `realtime-token`.
 - **D4** (2026-06-25, `coordenador`) — **Segredo no servidor é inegociável.** Nenhuma chave de
   API no bundle do cliente. Toca a regra do `CLAUDE.md`.
-- **D5** (pendente — decisão do dono) — **Voz e modelo exatos da OpenAI** (`alloy` vs `verse`;
-  `gpt-realtime` GA vs `gpt-4o-realtime-preview`) e teto de custo por minuto.
+- **D5** (2026-06-25, dono — **resolvida**) — **Voz do Alex: `verse`** (mais expressiva e natural
+  que `alloy`). Modelo `gpt-realtime` (fallback `gpt-4o-realtime-preview`). Resta observar o custo
+  por minuto na prática.
 - **D6** (2026-06-25, build do Lovable — **parcialmente resolvida**) — **Onde nasce a correção.**
   O MVP já emite correções **estruturadas** via tool-call `submit_corrections` no data channel
-  (não só texto solto). Falta decidir se uma função `coach-feedback` dedicada persiste isso em
-  `errors`/`review_queue` (P2) ou se o próprio cliente grava.
+  (não só texto solto). **Reforçado (2026-06-25):** o `ALEX_INSTRUCTIONS` agora obriga o Alex a
+  chamar `submit_corrections` **a cada turno** (lista vazia se nada) — painel consistente. Falta
+  decidir se uma função `coach-feedback` dedicada persiste isso em `errors`/`review_queue` (P2)
+  ou se o próprio cliente grava.
 - **D7** (2026-06-25, build do Lovable) — **Stack real do app: TanStack Start** (React 19 + Vite
   + Nitro), não Vite SPA + Supabase. O token nasce numa **server route**
   (`src/routes/api/realtime-token.ts`), não numa Edge Function Deno. O **esquema multiagente**
@@ -134,10 +137,10 @@ Definições completas em `.claude/agents/`. Cada agente tem uma faixa (lane) cl
 
 ## Estado atual por área (snapshot)
 
-- **Voz:** MVP **construído** no Lovable (`7a67a025-b365-4f78-8342-f3c96129b6cb`): server route
+- **Voz:** MVP **funcionando** no Lovable (`7a67a025-b365-4f78-8342-f3c96129b6cb`): server route
   `api/realtime-token`, cliente WebRTC (`src/lib/realtime-client.ts`), `VoiceOrb`/`Transcript`/
-  `FeedbackPanel`/`SetupCard`, correções estruturadas via `submit_corrections`. **Falta** o dono
-  colar `OPENAI_API_KEY` (Settings → Secrets) e testar a voz no preview.
+  `FeedbackPanel`/`SetupCard`. Voz **`verse`**; correções via `submit_corrections` a cada turno.
+  `OPENAI_API_KEY` configurada pelo dono; **voz confirmada funcionando**. `typecheck` (tsgo) ✅.
 - **Pedagogia:** `skill/` trazido do trabalho anterior (SKILL.md + 11 referências + templates +
   exemplos). É a base de conhecimento do Alex; será injetada nas instruções da sessão Realtime.
 - **Banco:** ainda não criado (P2). Schema-alvo definido no `CLAUDE.md`.
@@ -148,6 +151,19 @@ Definições completas em `.claude/agents/`. Cada agente tem uma faixa (lane) cl
 
 ## Handoff mais recente
 <!-- Sempre o topo = o mais recente. Use o template em docs/colaboracao/handoff-template.md -->
+
+### 2026-06-25 (b) · `voz-realtime` + `pedagogo` + `gerente-contexto`
+- **Objetivo da sessão:** ligar a voz (chave do dono) e aplicar 2 refinamentos pós-teste.
+- **O que mudou (app Lovable):** voz `alloy`→`verse` (corpo principal **e** fallback de
+  `realtime-token`); `ALEX_INSTRUCTIONS` agora exige, a cada turno, **resposta falada + chamada de
+  `submit_corrections`** (lista vazia se nada) — painel de feedback consistente.
+- **O que foi testado:** `typecheck` do Lovable (tsgo) ✅; preview renderiza; **voz confirmada
+  funcionando pelo dono**. Revisão de código do caminho de voz ponta a ponta OK. (Smoke test HTTP
+  do endpoint não rodou: o egress do sandbox bloqueia `*.lovable.app` — limitação de ambiente, não
+  do app.)
+- **Bloqueios / pendências:** nenhum. Observar custo/min da OpenAI na prática.
+- **Próximo passo sugerido:** P2 (progresso: auth + CEFR + streak + SM-2 no Supabase) ou os modos
+  (role-play/pronúncia/teste/revisão).
 
 ### 2026-06-25 · `coordenador` + `gerente-contexto` + `voz-realtime`
 - **Objetivo da sessão:** montar o projeto seguindo a estruturação multiagente do

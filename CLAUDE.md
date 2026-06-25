@@ -94,7 +94,7 @@ auth + progresso (SM-2). Metodologia AGENTS-COLLAB + elenco de 13 agentes adotad
 `AGENTS-COLLAB.md`).
 
 ## Decisões pendentes
-- Voz/modelo exatos da OpenAI (`alloy` vs `verse`; `gpt-realtime` GA vs `*-preview`) e custo/min.
+- Voz definida: **`verse`** · modelo `gpt-realtime` (fallback `*-preview`). Resta só validar custo/min.
 - Estratégia de correção: **em tempo real** (no data channel) vs **pós-turno** (edge function
   `coach-feedback`). Ver `AGENTS-COLLAB.md`.
 - Persistir transcrições? Default: **não** persistir áudio; texto só com consentimento.

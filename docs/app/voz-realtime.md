@@ -17,7 +17,7 @@ Supabase; aqui, como o app é TanStack Start, é uma **server route** equivalent
   ```json
   {
     "model": "gpt-realtime",
-    "voice": "alloy",
+    "voice": "verse",
     "modalities": ["audio", "text"],
     "input_audio_transcription": { "model": "whisper-1" },
     "instructions": "<instruções do Alex, de skill/SKILL.md>"
@@ -66,8 +66,8 @@ A OpenAI envia eventos JSON. Os que importam para o MVP:
   correções **estruturadas** (JSON) que alimentam `errors`/`vocabulary`/`review_queue`. Decisão
   do dono + `arquiteto-conversa`.
 
-## 5. Configuração da voz (D5 — decisão pendente)
+## 5. Configuração da voz (D5 — **decidido: `verse`**)
 
-`voice`: `alloy` (neutra) ou `verse` (mais expressiva). `model`: `gpt-realtime` (GA) com
+`voice`: **`verse`** (escolhida — mais expressiva e natural que `alloy`). `model`: `gpt-realtime` (GA) com
 fallback `gpt-4o-realtime-preview`. Ajustar velocidade/temperatura para soar natural sem
 "correr". Validar custo por minuto antes de liberar amplo.
