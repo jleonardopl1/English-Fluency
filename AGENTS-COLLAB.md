@@ -102,8 +102,12 @@ Definições completas em `.claude/agents/`. Cada agente tem uma faixa (lane) cl
 - 🎙️ **WebRTC exige HTTPS + permissão de microfone.** No preview do Lovable é https (ok); em
   dev local lembre que `getUserMedia` só roda em `https`/`localhost`. Sem permissão, a sessão
   nunca inicia — trate o estado "permissão negada" na UI.
-- ⏱️ **Token efêmero é curtíssimo.** O `client_secret` da sessão Realtime expira em ~1 min;
+- ⏱️ **Token efêmero é de uso único.** Na GA, o token vem no campo top-level **`value`** (`ek_...`);
   use-o **só** para abrir a conexão WebRTC, não o guarde. Reabrir sessão = novo token.
+- 🔀 **Realtime é GA, não beta.** Token: `POST /v1/realtime/client_secrets` (corpo com `session.audio`
+  aninhado); SDP: `POST /v1/realtime/calls?model=…`. O antigo `/v1/realtime/sessions` retorna
+  **"Invalid URL"**. Os eventos de transcrição do Alex viraram `response.output_audio_transcript.*`
+  (o cliente trata GA **e** legado).
 - 🗣️ **Risco de sufocar o aluno.** A tentação é corrigir tudo. O guardrail do produto é
   **máx. 3–4 correções por turno** e **comunicação antes de perfeição**. Não relaxe isso nas
   instruções do Alex (ver `skill/references/correction-engine.md`).
@@ -151,6 +155,17 @@ Definições completas em `.claude/agents/`. Cada agente tem uma faixa (lane) cl
 
 ## Handoff mais recente
 <!-- Sempre o topo = o mais recente. Use o template em docs/colaboracao/handoff-template.md -->
+
+### 2026-06-25 (c) · `voz-realtime`
+- **Objetivo da sessão:** corrigir erro de voz em produção — "Invalid URL (POST /v1/realtime/sessions)".
+- **O que mudou (app Lovable):** migração para os endpoints **GA** da OpenAI Realtime — token via
+  `POST /v1/realtime/client_secrets` (corpo `session.audio` aninhado; token no top-level `value`)
+  e SDP via `POST /v1/realtime/calls`. O cliente passou a tratar os eventos GA
+  (`response.output_audio_transcript.*`) além dos legados. Commit Lovable `1d92f97`.
+- **O que foi testado:** `typecheck` do Lovable ✅. **Falta o dono retestar a voz** no preview
+  (refresh forte para descartar a sessão antiga).
+- **Bloqueios / pendências:** aguardando confirmação do dono de que a voz conecta com os endpoints GA.
+- **Próximo passo sugerido:** dono testa; se OK, seguir para P2 (progresso) ou os modos.
 
 ### 2026-06-25 (b) · `voz-realtime` + `pedagogo` + `gerente-contexto`
 - **Objetivo da sessão:** ligar a voz (chave do dono) e aplicar 2 refinamentos pós-teste.

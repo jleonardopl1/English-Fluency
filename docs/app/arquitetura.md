@@ -20,7 +20,7 @@ leveza e acompanha a evolução. Construído no **Lovable** (ver `docs/app/lovab
 │ Server route (TanStack/Nitro) │   │  OpenAI Realtime API        │
 │ api/realtime-token            │   │  (gpt-realtime, voz US)     │
 │ • lê process.env.OPENAI_API…  │   │  • fala → fala              │
-│ • POST /v1/realtime/sessions  │──▶│  • transcrição da entrada   │
+│ • POST …/client_secrets (GA)  │──▶│  • transcrição da entrada   │
 │ • devolve a sessão efêmera    │ 2 │  • data channel de eventos  │
 └──────────────────────────────┘   └────────────────────────────┘
                 │ 3. (front abre WebRTC direto com a OpenAI usando o token)

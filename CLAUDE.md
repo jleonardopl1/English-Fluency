@@ -25,7 +25,7 @@ Este projeto adota a metodologia **AGENTS-COLLAB** para coordenar múltiplos age
 - **Voz (núcleo do produto):** **OpenAI Realtime API** (fala → fala) sobre **WebRTC**. Baixa
   latência, interrompível. A chave fica no servidor; o cliente usa **token efêmero**.
 - **Emissor do token:** **server route** `src/routes/api/realtime-token.ts` — lê
-  `process.env.OPENAI_API_KEY`, faz `POST /v1/realtime/sessions` (modelo `gpt-realtime`, fallback
+  `process.env.OPENAI_API_KEY`, faz `POST /v1/realtime/client_secrets` (modelo `gpt-realtime`, fallback
   `gpt-4o-realtime-preview`, voz americana, VAD do servidor) e devolve a sessão efêmera.
 - **Cliente de voz:** `src/lib/realtime-client.ts` (WebRTC + data channel). Instruções do Alex em
   `src/lib/alex-prompt.ts` (derivadas de `skill/`). Correções **estruturadas** via tool-call

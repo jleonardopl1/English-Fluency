@@ -11,34 +11,40 @@ Supabase; aqui, como o app é TanStack Start, é uma **server route** equivalent
 
 - **Secret:** `OPENAI_API_KEY` em `process.env` (Settings → Secrets no Lovable). Se ausente →
   responder `503` com `{ error: "missing_openai_api_key" }`; o front mostra o card de setup.
-- **Recomendação (hardening):** devolver ao cliente **apenas** `client_secret` + `expires_at`,
-  não a sessão inteira.
-- **Request da função:** `POST https://api.openai.com/v1/realtime/sessions` com:
+- **Request (GA):** `POST https://api.openai.com/v1/realtime/client_secrets` com o config da
+  sessão **aninhado** (voz e VAD/transcrição ficam sob `session.audio`):
   ```json
   {
-    "model": "gpt-realtime",
-    "voice": "verse",
-    "modalities": ["audio", "text"],
-    "input_audio_transcription": { "model": "whisper-1" },
-    "instructions": "<instruções do Alex, de skill/SKILL.md>"
+    "session": {
+      "type": "realtime",
+      "model": "gpt-realtime",
+      "instructions": "<instruções do Alex, de skill/SKILL.md>",
+      "audio": {
+        "input": {
+          "turn_detection": { "type": "server_vad", "create_response": true },
+          "transcription": { "model": "whisper-1" }
+        },
+        "output": { "voice": "verse" }
+      }
+    }
   }
   ```
-- **Resposta ao cliente:** repassar **apenas** `client_secret.value` e o `expires_at`. Nunca o
-  corpo inteiro nem a chave. CORS liberado para a origem do app.
+- **Resposta:** na GA o token efêmero é o campo **top-level `value`** (ex.: `ek_...`), junto de um
+  objeto `session`. (Não é mais `client_secret.value`.) O route repassa o JSON ao cliente.
 - `verify_jwt`: se a conversa exigir login, manter `true`; no MVP anônimo pode ser `false`.
 
 ## 2. Cliente WebRTC (`src/lib/realtime-client.ts`)
 
 ```
-1. const { client_secret } = await fetch('/functions/v1/realtime-token').then(r => r.json())
+1. const { value } = await fetch('/api/realtime-token').then(r => r.json())  // token efêmero (ek_...)
 2. const pc = new RTCPeerConnection()
 3. pc.ontrack = (e) => audioEl.srcObject = e.streams[0]          // voz do Alex
 4. const mic = await navigator.mediaDevices.getUserMedia({ audio: true })
    pc.addTrack(mic.getTracks()[0])                               // microfone do aluno
 5. const dc = pc.createDataChannel('oai-events')                 // eventos (transcrição, etc.)
 6. const offer = await pc.createOffer(); await pc.setLocalDescription(offer)
-7. POST do SDP para https://api.openai.com/v1/realtime?model=gpt-realtime
-   Authorization: Bearer <client_secret>      Content-Type: application/sdp
+7. POST do SDP para https://api.openai.com/v1/realtime/calls?model=gpt-realtime
+   Authorization: Bearer <value>           Content-Type: application/sdp
 8. await pc.setRemoteDescription({ type: 'answer', sdp: <resposta> })
 ```
 
@@ -54,8 +60,8 @@ A OpenAI envia eventos JSON. Os que importam para o MVP:
 | Evento (tipo) | Uso na UI |
 | --- | --- |
 | `conversation.item.input_audio_transcription.completed` | linha "You" na transcrição |
-| `response.audio_transcript.delta` / `.done` | linha "Alex" (streaming) |
-| `response.done` | fim do turno do Alex |
+| `response.output_audio_transcript.delta` / `.done` (GA; legado: `response.audio_transcript.*`) | linha "Alex" (streaming) |
+| `response.done` / `response.output_audio.done` | fim do turno do Alex |
 | `error` | mostrar erro amigável |
 
 ## 4. Correção (D6 — decisão pendente)

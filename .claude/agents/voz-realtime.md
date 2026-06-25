@@ -9,16 +9,16 @@ ponta.
 
 ## Stack e fluxo (TanStack Start)
 - **Server route `src/routes/api/realtime-token.ts`:** lê `process.env.OPENAI_API_KEY`, faz
-  `POST https://api.openai.com/v1/realtime/sessions` com o modelo realtime (`gpt-realtime`,
+  `POST https://api.openai.com/v1/realtime/client_secrets` com o modelo realtime (`gpt-realtime`,
   fallback `gpt-4o-realtime-preview`), a voz americana, VAD do servidor e as instruções do Alex
   (de `src/lib/alex-prompt.ts`, derivadas de `skill/SKILL.md`). Sem `OPENAI_API_KEY` → `503`
-  claro (o front mostra card de setup). *Hardening:* devolver só o `client_secret`, não a sessão
-  inteira. (Equivale à Edge Function do agrodecision, mas como o app é TanStack Start é uma
+  claro (o front mostra card de setup). Na GA, o token efêmero é o campo top-level `value`
+  (`ek_...`). (Equivale à Edge Function do agrodecision, mas como o app é TanStack Start é uma
   server route.)
 - **Cliente WebRTC `src/lib/realtime-client.ts`:** pede o token efêmero → cria
   `RTCPeerConnection` → adiciona a trilha do microfone (`getUserMedia`) → `ontrack` toca o áudio
   do Alex num `<audio>` → abre um **data channel** para eventos (transcrição parcial, correções
-  via tool-call `submit_corrections`) → troca SDP com `https://api.openai.com/v1/realtime`.
+  via tool-call `submit_corrections`) → troca SDP com `https://api.openai.com/v1/realtime/calls`.
 
 ## Convenções
 - **Segredo no servidor (inegociável).** A `OPENAI_API_KEY` nunca vai ao bundle. O front só vê
